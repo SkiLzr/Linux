@@ -1,0 +1,14 @@
+#! /bin/bash
+# ifs.sh
+
+IFS=":"
+while read -e prenom nom role
+do
+IFS=":"
+prenom2l=$(echo ${prenom:0:2});
+nom1l=$(echo ${nom:0:1});
+trigramme=$prenom2l$nom1l
+
+mkdir -v $trigramme
+
+done < /home/skilz/Documents/Linux/UsersLinux
