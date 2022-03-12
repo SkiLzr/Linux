@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# Les user Id et group ID sont geres par le systeme automatiquement.
+
+# Schema repertoires
+# /home
+#   <trigrammes>
+#     public
+#     <role> (lien symbolique vers le reprtoire du role)
+#   recherche
+#   developpement
+#   ingenierie
+#   admin
+
+# Noms + prenoms + roles dans des variables
+roles=(recherche developpement ingenierie)
+employes_recherche=("Robert Duval" "Sam Francois" "Albert Chamfort" "Jeanne Latour" "Sonia Andersen")
+employes_developpement=("Nadine Dulks" "Linus Turalds" "Ken Thompson" "Jacques Demaitre")
+employes_ingenierie=("Herman Stamper" "Rose Martin" "Alfred Demaison")
+admins=("Robert Duval" "Nadine Dulks" "Herman Stamper")
+
+# Fonction de generation trigramme (prenom, nom)
+# --> trigramme <prenom> <nom>
+function trigramme() {
+  return ${1:0:2}${2:0:1} | tr "[:upper:]" "[:lower:]"
+}
+
+# Le groupe general
+groupadd techtech
+
+# Pour chaque role, on cree les dossiers et les permissions
+for role in $roles
+do
+  groupadd $role; mkdir -p /home/$role; chgrp $role /home/$role; chmod 1770 /home/$role
+done
+
+# Les chercheurs
+for employe in $employes_recherche
+do
+  trigramme=$(trigramme employe); useradd --create-home --home-dir /home/$trigramme --groups recherche,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $trigramme) $trigramme; chown -R $trigramme:$trigramme /home/$trigramme; chmod -R 751 /home/$trigramme; mkdir -p /home/$trigramme/public; chown $trigramme:techtech /home/$trigramme/public; chmod g=rx /home/$trigramme/public; ln -s /home/recherche /home/$trigramme/recherche
+done
+
+# Les developpeurs
+for employe in $employes_developpement
+do
+  trigramme=$(trigramme employe); useradd --create-home --home-dir /home/$trigramme --groups developpement,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $trigramme) $trigramme; chown -R $trigramme:$trigramme /home/$trigramme; chmod -R 751 /home/$trigramme; mkdir -p /home/$trigramme/public; chown $trigramme:techtech /home/$trigramme/public; chmod g=rx /home/$trigramme/public; ln -s /home/developpement /home/$trigramme/developpement
+done
+
+# Les ingenieurs
+for employe in $employes_ingenierie
+do
+  trigramme=$(trigramme employe); useradd --create-home --home-dir /home/$trigramme --groups ingenierie,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $trigramme) $trigramme; chown -R $trigramme:$trigramme /home/$trigramme; chmod -R 751 /home/$trigramme; mkdir -p /home/$trigramme/public; chown $trigramme:techtech /home/$trigramme/public; chmod g=rx /home/$trigramme/public; ln -s /home/ingenierie /home/$trigramme/ingenierie
+done
+
+# Admins
+groupadd admins
+; mkdir -p /home/admins; chgrp admins /home/admins; chmod 1770 /home/admins
+for admin in $admins
+do
+  trigramme=$(trigramme employe); usermod -a -G admins $trigramme
+done
+
+# Utilisateur big boss
+big_boss=$(trigramme Bill Porte); useradd --create-home --home-dir /home/$big_boss --groups admins,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $big_boss) $big_boss
