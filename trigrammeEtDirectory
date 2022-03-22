@@ -1,14 +1,40 @@
 #! /bin/bash
 # ifs.sh
 
-IFS=":"
-while read -e prenom nom role
+IFS=":";
+while read -e prenom nom role branche dossier dossier2 admin
 do
 IFS=":"
 prenom2l=$(echo ${prenom:0:2});
 nom1l=$(echo ${nom:0:1});
 trigramme=$prenom2l$nom1l
 
-mkdir -v $trigramme
+for $trigramme 
 
-done < /home/skilz/Documents/Linux/UsersLinux
+do 
+
+useradd $trigramme
+
+
+mkdir -v -p /home/$trigramme/$dossier
+mkdir -v -p /home/$branche/$dossier/$admin
+
+if [$role eq "President"]
+then useradd $trigramme--create-home --groups developpement,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $trigramme) $trigramme
+mkdir -v -p /home/$trigramme/$dossier
+else if [$role eq "Chercheur"]
+then useradd $trigramme--create-home --groups BrancheRecherche,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $trigramme) $trigramme
+mkdir -v -p /home/$trigramme/$dossier
+else if [$role eq "Developpeur"]
+then useradd $trigramme--create-home --groups BrancheDeveloppement,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $trigramme) $trigramme
+mkdir -v -p /home/$trigramme/$dossier
+else if [$role eq "Ingenieur"]
+then useradd $trigramme--create-home --groups BrancheIngenieur,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $trigramme) $trigramme
+mkdir -v -p /home/$trigramme/$dossier
+else if [$role eq "Chef de service"]
+then useradd $trigramme--create-home --groups Admin,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $trigramme) $trigramme
+mkdir -v -p /home/$trigramme/$dossier/$dossier2
+
+else if [$branche eq $branche]
+then mkdir -v -p /home/$branche/$dossier
+done < /home/skilz/Documents/Linux/usersLinux
