@@ -30,7 +30,7 @@ set -x
 	trigramme=$prenom2l$nom1l;
         #Conditions création users + répertoires et assignation groupes
         if [ "$role" == "$President" ]
-        then useradd -m -G Admin,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
+        then useradd -m --home-dir /home/$trigramme -G Admin,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
         mkdir -v -p /home/$trigramme/$dossier
 	      chmod 1700 /home/$trigramme
 	      chown -R $trigramme:$trigramme /home/$trigramme
@@ -43,7 +43,7 @@ set -x
         fi
 
         if [ "$role" == "$Chercheur" ]
-        then useradd -m -G BrancheRecherche,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
+        then useradd -m --home-dir /home/$trigramme -G BrancheRecherche,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
         mkdir -v -p /home/$trigramme/$dossier
 	      ln -s /home/BrancheRecherche /home/$trigramme/BrancheRecherche
 	      chmod 1764 /home/$trigramme
@@ -51,7 +51,7 @@ set -x
         fi
 
         if [ "$role" == "$Developpeur" ]
-        then useradd -m  -G BrancheDeveloppement,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
+        then useradd -m --home-dir /home/$trigramme -G BrancheDeveloppement,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
         mkdir -v -p /home/$trigramme/$dossier
 	      ln -s /home/BrancheDeveloppement /home/$trigramme/BrancheDeveloppement
       	chmod 1764 /home/$trigramme
@@ -59,7 +59,7 @@ set -x
         fi
 
         if [ "$role" == "$Ingenieur" ]
-        then useradd -m -G BrancheIngenieurie,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
+        then useradd -m --home-dir /home/$trigramme -G BrancheIngenieurie,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
       	mkdir -v -p /home/$trigramme/$dossier
     	  ln -s /home/BrancheIngenieurie /home/$trigramme/BrancheIngenieurie
     	  chmod 1764 /home/$trigramme
@@ -67,7 +67,7 @@ set -x
         fi
 
         if [ "$role" == "$Chef" ]
-        then useradd -m -G Admin,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
+        then useradd -m --home-dir /home/$trigramme -G Admin,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
         mkdir -v -p /home/$trigramme/$dossier2
         mkdir -v -p /home/$trigramme/$admin
 	      ln -s /home/$branche /home/$trigramme/$branche
