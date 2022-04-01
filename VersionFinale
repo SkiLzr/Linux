@@ -1,6 +1,9 @@
 #! /bin/bash
 # ifs.sh
 #Création groupes
+
+who=$ echo "whoami"
+
 for grp in BigBoss BrancheDeveloppement BrancheRecherche BrancheIngenieurie techtech Admin
 do
 groupadd $grp
@@ -22,21 +25,19 @@ trigramme=$prenom2l$nom1l
 pass=$(echo ${password:0:7});
 password=$(openssl rand -base64 7);
 #Création fichier passwords
-touch passwords /home/skilz/Documents
+touch passwords /home/passwords
 
 President="President"; Chercheur="Chercheur"; Developpeur="Developpeur"; Ingenieur="Ingenieur"; Chef="Chef de service";
 
 #Conditions création users + répertoires et assignation groupes
 
-for i in 1
-do
 	trigramme=$prenom2l$nom1l;
         #Conditions création users + répertoires et assignation groupes
         if [ "$role" == "$President" ]
-        then useradd -m -G BigBoss,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $trigramme) $trigramme
+        then useradd -m -G BigBoss,admin,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
         mkdir -v -p /home/$trigramme/$dossier
 	chmod 1700 /home/$trigramme
-	chown -R $trigramme:BigBoss /home/$trigramme
+	chown -R $trigramme:BigBoss /home/$trigramm
         fi
 
         if [ "$branche" == "$branche" ]
@@ -80,11 +81,7 @@ do
 	chown -R $trigramme:$trigramme /home/$trigramme
         fi
 	trigramme=$prenom2l$nom1l;
-done
+        echo $trigramme $pass >> /home/passwords
+done < /home/users
 
-for i in 1
-        do
-                echo $trigramme $pass >> /home/skilz/Documents/passwords
-done
-done < /home/skilz/Documents/users
 
