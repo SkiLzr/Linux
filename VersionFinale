@@ -1,9 +1,6 @@
 #! /bin/bash
 # ifs.sh
 #Création groupes
-
-who=$ echo "whoami"
-
 for grp in BigBoss BrancheDeveloppement BrancheRecherche BrancheIngenieurie techtech Admin
 do
 groupadd $grp
@@ -22,66 +19,78 @@ nom1l=$(echo ${nom:0:1});
 trigramme=$prenom2l$nom1l
 
 #Création password
-pass=$(echo ${password:0:7});
 password=$(openssl rand -base64 7);
 #Création fichier passwords
-touch passwords /home/passwords
+touch passwords /home/
 
 President="President"; Chercheur="Chercheur"; Developpeur="Developpeur"; Ingenieur="Ingenieur"; Chef="Chef de service";
 
 #Conditions création users + répertoires et assignation groupes
 
-	trigramme=$prenom2l$nom1l;
         #Conditions création users + répertoires et assignation groupes
         if [ "$role" == "$President" ]
-        then useradd -m -G BigBoss,admin,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
+        then useradd -m --home-dir /home/$trigramme -G BigBoss,Admin,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
         mkdir -v -p /home/$trigramme/$dossier
-	chmod 1700 /home/$trigramme
-	chown -R $trigramme:BigBoss /home/$trigramm
+	      chown -R $trigramme:BigBoss /home/$trigramme
+	      chmod -R 1760 /home/$trigramme
         fi
 
-        if [ "$branche" == "$branche" ]
-        then mkdir -v -p /home/$branche/$dossier
-	chmod 1760 /home/$branche
-	chown -R $trigramme:BigBoss /home/$branche
+        if [ "$branche" == "$branche" ] 
+	then mkdir -v -p /home/$branche/$dossier
+	chown -R $trigramme /home/$branche
+	chmod -R 1750 /home/$branche
+	chmod -R 1770 /home/$branche/$dossier
+
+
         fi
 
         if [ "$role" == "$Chercheur" ]
-        then useradd -m -G BrancheRecherche,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
+        then useradd -m --home-dir /home/$trigramme -G BrancheRecherche,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
         mkdir -v -p /home/$trigramme/$dossier
 	ln -s /home/BrancheRecherche /home/$trigramme/BrancheRecherche
-	chmod 1764 /home/$trigramme
-	chown -R $trigramme:$trigramme /home/$trigramme
+	chown -R $trigramme:techtech /home/$trigramme
+	chmod -R 1750 /home/$trigramme
         fi
 
         if [ "$role" == "$Developpeur" ]
-        then useradd -m  -G BrancheDeveloppement,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
+        then useradd -m --home-dir /home/$trigramme -G BrancheDeveloppement,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
         mkdir -v -p /home/$trigramme/$dossier
-	ln -s /home/BrancheDeveloppement /home/$trigramme/BrancheDeveloppement
-	chmod 1764 /home/$trigramme
-	chown -R $trigramme:$trigramme /home/$trigramme
+	 ln -s /home/BrancheDeveloppement /home/$trigramme/BrancheDeveloppement
+	 chown -R $trigramme:techtech /home/$trigramme
+      	 chmod -R 1750 /home/$trigramme
         fi
 
         if [ "$role" == "$Ingenieur" ]
-        then useradd -m -G BrancheIngenieurie,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
-    	mkdir -v -p /home/$trigramme/$dossier
-	ln -s /home/BrancheIngenieurie /home/$trigramme/BrancheIngenieurie
-	chmod 1764 /home/$trigramme
-	chown -R $trigramme:$trigramme /home/$trigramme
+        then useradd -m --home-dir /home/$trigramme -G BrancheIngenieurie,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
+      	mkdir -v -p /home/$trigramme/$dossier
+    	  ln -s /home/BrancheIngenieurie /home/$trigramme/BrancheIngenieurie
+	      chown -R $trigramme:techtech /home/$trigramme
+    	  chmod -R 1750 /home/$trigramme
         fi
 
         if [ "$role" == "$Chef" ]
-        then useradd -m -G Admin,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
+        then useradd -m --home-dir /home/$trigramme -G Admin,techtech -p $(perl -e 'print crypt($ARGV[0], "password")' $password) $trigramme
         mkdir -v -p /home/$trigramme/$dossier2
         mkdir -v -p /home/$trigramme/$admin
+		
+		if [ "$branche" == "$branche" ]
+		then usermod -aG $branche $trigramme
+		fi
+
 	ln -s /home/$branche /home/$trigramme/$branche
-	chmod 1760 /home/$trigramme/$admin
-	chmod 1764 /home/$trigramme/$dossier2
-	chown -R $trigramme:$trigramme /home/$trigramme
-	chown -R $trigramme:$trigramme /home/$trigramme
-        fi
+      	chown -R $trigramme:Admin /home/$trigramme
+	chmod -R 1775 /home/$trigramme
+      	chmod -R 1770 /home/$trigramme/$admin
+      	chmod -R 1775 /home/$trigramme/$dossier2
+	
+	fi
 	trigramme=$prenom2l$nom1l;
-        echo $trigramme $pass >> /home/passwords
+
+for i in 1
+        do
+                echo $trigramme $password >> /home/passwords
+done
+	chown $BiP:techtech /home
+	chmod 750 /home
+	rm -rf /home/' '
 done < /home/users
-
-
